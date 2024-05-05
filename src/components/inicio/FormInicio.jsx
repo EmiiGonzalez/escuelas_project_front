@@ -2,18 +2,28 @@ import { Button } from "@mui/material";
 import { ModalAddEscuela } from "./ModalAddEscuela";
 import { AutoCompleteEscuela } from "./AutoCompleteEscuela";
 import { useEscuela } from "../../util/hooks/useEscuela";
-import { PropTypes } from "prop-types"
-import AddIcon from '@mui/icons-material/Add';
+import { PropTypes } from "prop-types";
+import AddIcon from "@mui/icons-material/Add";
 import { useHandleOpen } from "../../util/hooks/useHandleOpen";
+import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
+import { memo } from "react";
 
-export const FormInicio = ({ data, tema, reloadData, url, handleOpenToast }) => {
+
+export const FormInicio = ({
+  data,
+  tema,
+  updateData,
+  url,
+  handleOpenToast,
+}) => {
   const { escuela, setEscuela, error, setError } = useEscuela();
   const { open, handleOpen, handleClose } = useHandleOpen();
+ const navigate = useNavigate()
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (escuela == "") {
+    if (escuela.nombre == "") {
       setError({
         state: true,
         message: "Por favor, ingrese una escuela de la lista",
@@ -21,7 +31,10 @@ export const FormInicio = ({ data, tema, reloadData, url, handleOpenToast }) => 
       event.target[0].focus();
       return;
     }
+    navigate(`/cursos/${escuela.id}/${new Date().getFullYear()}`);
   };
+
+
 
   return (
     <Box
@@ -32,7 +45,6 @@ export const FormInicio = ({ data, tema, reloadData, url, handleOpenToast }) => 
       <AutoCompleteEscuela
         data={data}
         setError={setError}
-        escuela={escuela}
         tema={tema}
         error={error}
         setEscuela={setEscuela}
@@ -57,13 +69,24 @@ export const FormInicio = ({ data, tema, reloadData, url, handleOpenToast }) => 
         >
           Añadir
         </Button>
-        <ModalAddEscuela open={open} handleClose={handleClose} tema={tema} reloadData={reloadData} url={url} handleOpenToast={handleOpenToast}/>
+        <ModalAddEscuela
+          open={open}
+          handleClose={handleClose}
+          tema={tema}
+          updateData={updateData}
+          url={url}
+          handleOpenToast={handleOpenToast}
+        />
       </Box>
     </Box>
   );
 };
 
+
 FormInicio.propTypes = {
   data: PropTypes.array.isRequired,
   tema: PropTypes.string.isRequired,
-}
+  updateData: PropTypes.func.isRequired,
+  url: PropTypes.string.isRequired,
+  handleOpenToast: PropTypes.func.isRequired,
+};

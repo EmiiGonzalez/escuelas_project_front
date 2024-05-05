@@ -11,7 +11,7 @@ export const AutoCompleteEscuela = ( { data, setEscuela, setError, tema, error }
         getOptionLabel={(option) => option?.nombre || ""}
         onChange={(event, newValue) => {
           // newValue será null si se borra la selección
-          setEscuela(newValue ? newValue.nombre : "");
+          setEscuela(newValue ? {nombre: newValue.nombre, id: newValue.id} : {nombre: "",  id: 0});
           setError({
             state: !newValue,
             message: newValue

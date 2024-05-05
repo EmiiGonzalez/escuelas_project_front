@@ -6,8 +6,8 @@ import Typography from "@mui/material/Typography";
 import { TextField } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import { PropTypes } from "prop-types";
-import { useEscuela } from "../../util/hooks/useEscuela";
-import { useAxiosPost } from "../../util/hooks/crud/useAxiosPost";
+import { useValid } from "../../util/hooks/useValid";
+import usePostEscuela from "../../util/hooks/crud/usePostEscuela";
 import Box from "@mui/material/Box";
 
 const style = {
@@ -29,18 +29,19 @@ export const ModalAddEscuela = ({
   tema,
   open,
   handleClose,
-  reloadData,
+  updateData,
   url,
-  handleOpenToast
+  handleOpenToast,
 }) => {
-
-  const { escuela, setEscuela, error, setError } = useEscuela();
-  const urlPostEscuela = `${url + import.meta.env.VITE_api_post_escuelas}`;
-  const { postData, response, isLoading, errorPost } = useAxiosPost();
+  const { string, setString, setError, error } = useValid();
+  const { postEscuela, isLoading } = usePostEscuela(
+    handleOpenToast,
+    updateData
+  );
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (escuela === "") {
+    if (string === "") {
       setError({
         state: true,
         message: "Por favor, ingrese una escuela",
@@ -49,12 +50,8 @@ export const ModalAddEscuela = ({
       return;
     }
 
-    postData(urlPostEscuela, { nombre: escuela });
-    console.log(errorPost);
-
-    handleOpenToast("success", `Escuela ${escuela} agregada`);
+    postEscuela(string);
     handleClose();
-    reloadData();
   };
 
   return (
@@ -103,9 +100,9 @@ export const ModalAddEscuela = ({
               error={error.state}
               helperText={error.message}
               autoComplete="off"
-              value={escuela}
+              value={string}
               onChange={(event) => {
-                setEscuela(event.target.value);
+                setString(event.target.value);
                 setError({ state: false, message: "" });
               }}
               onBlur={(e) => {
@@ -137,4 +134,6 @@ ModalAddEscuela.propTypes = {
   tema: PropTypes.string.isRequired,
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
+  updateData: PropTypes.func.isRequired,
+  url: PropTypes.string.isRequired,
 };

@@ -1,45 +1,36 @@
 import { FormInicio } from "./FormInicio";
-import { useFetchData } from "../../util/useFetchData";
+import { useFetchGlobal } from "../../util/hooks/crud/useFetchGlobal";
 import { Alert, CircularProgress } from "@mui/material";
 import PropTypes from 'prop-types'
 import Box from '@mui/material/Box'
-import { useEffect } from "react";
+
 
 export const Inicio = ({ url, tema, handleOpenToast }) => {
   const urlApi = url + import.meta.env.VITE_api_get_all_escuelas;
+  const {data, error, isLoading, updateData} = useFetchGlobal(urlApi);
 
-  const {state, reloadData, fetchData} = useFetchData(urlApi);
-
-  useEffect(() => {
-    fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[])
-
-  if (state.loading && state.error === null) {
+  if (isLoading && !error) {
     return <CircularProgress />;
   }
 
-  if (state.error) {
-    console.log(state.error);
+  if (error) {
+    console.log(error);
+    return <Alert severity="error">{error.message}</Alert>;
   }
 
-  if (state.data) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          height: "90%",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <FormInicio data={state.data} tema={tema} reloadData={reloadData} url={url} handleOpenToast={handleOpenToast}/>
-      </Box>
-    );
-  }
-
-  return <Alert severity="error">{state.error.message}</Alert>;
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <FormInicio data={data} tema={tema} updateData={updateData} url={url} handleOpenToast={handleOpenToast}/>
+    </Box>
+  );
 };
 
 Inicio.propTypes = {

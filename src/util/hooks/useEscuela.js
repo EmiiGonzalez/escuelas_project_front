@@ -1,7 +1,10 @@
 import { useState } from "react";
 
 export const useEscuela = () => {
-    const [escuela, setEscuela] = useState("");
+    const [escuela, setEscuela] = useState({
+      nombre: "",
+      id: 0,
+    });
     const [error, setError] = useState({
       state: false,
       message: "",

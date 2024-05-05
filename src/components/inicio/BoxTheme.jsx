@@ -3,14 +3,16 @@ import PropTypes from 'prop-types';
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
 import Box from '@mui/material/Box'
+import { useCallback } from "react";
 
 export const BoxTheme = ({ tema, setTema }) => {
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     setTema(tema === "light" ? "dark" : "light");
-  };
+  }, [setTema, tema]);
 
+  
   return (
-    <Box sx={{ height: "10%" }}>
+    <Box sx={{ height: "10%", position: "absolute", top: "90%", right: "50%", zIndex: 1 }}>
       <Zoom in timeout={500}>
         <Fab
           onClick={handleClick}
